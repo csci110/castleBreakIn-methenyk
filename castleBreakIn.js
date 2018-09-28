@@ -33,6 +33,7 @@ class Princess extends Sprite {
         this.defineAnimation("left", 9, 11);
         this.defineAnimation("right", 3, 5);
         this.speedWhenWalking = 150;
+        this.live = 3;
     }
     handleLeftArrowKey(){
     this.playAnimation ("left");
@@ -59,6 +60,24 @@ class Princess extends Sprite {
             otherSprite.angle = 90 + 2 * horizontalOffset;
         }
         return false;
+    }
+    handleFirstGameLoop(){
+        // Set up a text area to display the number of lives remaining.
+        this.livesDisplay = game.createTextArea(game.displayWidth - 144, 20);
+        this.updateLivesDisplay();
+    }
+    updateLivesDisplay(){
+        game.writeToTextArea(this.livesDisplay, "Lives = " + this.lives);
+    }
+    loseALife(){
+        this.lives - 1;
+        this.updateLivesDisplay();
+        if(this.lives > 0){
+            new Ball(350, 350, "A ball", "ball.png");
+        }
+        if(!this.lives > 0){
+            game.end('The mysterious stranger has escaped\nPrincess Ann for now!\n\nBetter luck next time.');
+        }
     }
 }
 let Ann = new Princess();
