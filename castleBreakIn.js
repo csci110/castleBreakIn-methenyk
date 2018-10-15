@@ -72,9 +72,13 @@ class Princess extends Sprite {
     loseALife() {
         this.lives = this.lives - 1;
         this.updateLivesDisplay();
-        if (this.lives > 0) {
+        if (this.lives < 0) {
             new Ball(350, 350, "A ball", "ball.png");
         }
+    }
+    addALife() {
+        this.lives = this.lives + 1;
+        this.updateLivesDisplay();
     }
 }
 let Ann = new Princess();
@@ -92,21 +96,26 @@ class Ball extends Sprite {
         this.playAnimation("spin", true);
         this.speed = 1;
         this.angle = 50 + Math.random() * 80;
+        Ball.ballsInPlay = Ball.ballsInPlay + 1;
+
     }
     handleGameLoop() {
         if (this.speed < 200) {
             this.speed++;
         }
     }
-    handleBoundaryContact(){
-        game.removeSprite(this);
-        Ann.loseALife();
+    handleBoundaryContact() {
+        Ball.ballsInPlay = Ball.ballsInPlay - 1;
+        if (Ball.ballsInplay === 0) {
+            Ann.loseALife();
+        }
     }
 }
+Ball.ballsInPlay = 0;
 new Ball(350, 350, "A ball", "ball.png");
 
 class Block extends Sprite {
-    constructor(x,y){
+    constructor(x, y) {
         super();
         this.x = x;
         this.y = y;
@@ -115,16 +124,40 @@ class Block extends Sprite {
         this.accelerateOnBounce = false;
         Block.blocksToDestroy = Block.blocksToDestroy + 1;
     }
-    handleCollision(){
+    handleCollision() {
         game.removeSprite(this);
         Block.blocksToDestroy = Block.blocksToDestroy - 1;
-        if(Block.blocksToDestroy <=0){
+        if (Block.blocksToDestroy <= 0) {
             game.end('Congratulations!\n\nPrincess Ann can continue her pursuit\nof the mysterious stranger!');
             this.accelerateOnBounce = true;
         }
+    }
+}
+class ExtraLifeBlock extends Block {
+    constructor(x, y) {
+        super(x, y);
+        this.setImage("block2.png");
+        Block.blocksToDestroy = Block.blocksToDestroy - 1;
+    }
+    handleCollision() {
+        Ann.addALife();
+        return true;
+    }
+}
+class ExtraBallBlock extends Block {
+    constructor(x, y) {
+        super(x, y);
+        this.setImage("block3.png");
+    }
+    handleCollision() {
+        super.handleCollision(); // call function in superclass
+        new Ball(); // extend superclass behavior
+        return true;
     }
 }
 Block.blocksToDestory = 0;
 for (let i = 0; i < 5; i = i + 1) {
     new Block(200 + i * 48, 200);
 }
+new ExtraLifeBlock(200, 250);
+new ExtraBallBlock(300, 250);
