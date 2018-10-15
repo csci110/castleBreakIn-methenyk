@@ -106,7 +106,7 @@ class Ball extends Sprite {
     }
     handleBoundaryContact() {
         Ball.ballsInPlay = Ball.ballsInPlay - 1;
-        if (Ball.ballsInplay === 0) {
+        if (Ball.ballsInPlay === 0) {
             Ann.loseALife();
         }
     }
@@ -140,6 +140,7 @@ class ExtraLifeBlock extends Block {
         Block.blocksToDestroy = Block.blocksToDestroy - 1;
     }
     handleCollision() {
+        super.handleCollision();
         Ann.addALife();
         return true;
     }
@@ -151,7 +152,7 @@ class ExtraBallBlock extends Block {
     }
     handleCollision() {
         super.handleCollision(); // call function in superclass
-        new Ball(); // extend superclass behavior
+        new Ball(350, 350, "A ball", "ball.png"); // extend superclass behavior
         return true;
     }
 }
