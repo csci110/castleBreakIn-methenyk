@@ -32,7 +32,6 @@ class Princess extends Sprite {
         this.accelerateOnBounce = false;
         this.defineAnimation("left", 9, 11);
         this.defineAnimation("right", 3, 5);
-        this.speedWhenWalking = 150;
         this.lives = 3;
     }
     handleLeftArrowKey() {
@@ -72,8 +71,11 @@ class Princess extends Sprite {
     loseALife() {
         this.lives = this.lives - 1;
         this.updateLivesDisplay();
-        if (this.lives < 0) {
+        if (Ball.ballsInPlay === 0) {
             new Ball(350, 350, "A ball", "ball.png");
+        }
+        if (this.lives === 0){
+            game.end('The Mysterious stranger escaped\nPrincess Ann for now!\n\nBetter luck next time!');
         }
     }
     addALife() {
@@ -108,6 +110,7 @@ class Ball extends Sprite {
         Ball.ballsInPlay = Ball.ballsInPlay - 1;
         if (Ball.ballsInPlay === 0) {
             Ann.loseALife();
+            game.removeSprite(this);
         }
     }
 }
